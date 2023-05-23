@@ -1,6 +1,4 @@
 import sqlite3
-
-from bayes import NaiveBayesClassifier as bayes
 from bottle import redirect, request, route, run, template
 from db import News, session
 from scraputils import get_news
@@ -9,7 +7,7 @@ from scraputils import get_news
 @route("/news")
 def news_list():
     sess = session()
-    rows = sess.query(News).filter(News.label == None).all()
+    rows = sess.query(News).filter(News.label == None).limit(50).all()
     return template("news_template", rows=rows)
 
 
@@ -29,20 +27,29 @@ def add_label():
 @route("/update")
 def update_news():
     sess = session()
-    news = get_news("https://news.ycombinator.com/newest")
+    offset = int(request.query.get("offset", 0))
+    limit = 50
 
-    for element in news:
-        title = element["title"]
-        if not list(sess.query(News).filter(News.title == title)):
-            title = element["title"] if "title" in element else "-"
-            author = element["author"] if "author" in element else "-"
-            comments = element["comments"] if "comments" in element else 0
-            points = element["points"] if "points" in element else 0
-            url = element["url"] if "url" in element else ""
-            new_el = News(title=title, author=author, url=url, comments=comments, points=points)
-            sess.add(new_el)
+    news_count = sess.query(News).count()
+    rows = sess.query(News).offset(offset).limit(limit).all()
 
-    sess.commit()
+    if offset >= news_count:
+        news = get_news("https://news.ycombinator.com/newest")
+
+        for element in news:
+            title = element.get("title", "-")
+            if not sess.query(News).filter(News.title == title).first():
+                author = element.get("author", "-")
+                comments = element.get("comments", 0)
+                points = element.get("points", 0)
+                url = element.get("url", "")
+                new_el = News(title=title, author=author, url=url, comments=comments, points=points)
+                sess.add(new_el)
+
+        sess.commit()
+        rows = sess.query(News).offset(offset).limit(limit).all()
+
+    redirect("/news")
 
 
 @route("/classify")

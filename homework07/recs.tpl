@@ -8,15 +8,20 @@
 </head>
 <body>
     <div class="ui container" style="padding-top: 10px;">
+        <a href="javascript:history.go(-1)" class="ui primary button">Назад</a> <!-- Добавленная кнопка "Назад" -->
         <h1>Возможно, вам понравятся эти статьи</h1>
         <table class="ui celled table">
             <thead>
                 <th>Статьи</th>
+                <th>Авторы</th>
+                <th>Метки</th>
             </thead>
             <tbody>
                 %for row in rows:
                 <tr>
                     <td><a href="{{ row.url }}">{{ row.title }}</a></td>
+                    <td>{{ row.author }}</td>
+                    <td>{{ row.label }}</td>
                 </tr>
                 %end
             </tbody>
