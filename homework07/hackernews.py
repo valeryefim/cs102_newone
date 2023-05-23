@@ -24,6 +24,7 @@ def add_label() -> None:
         sess.commit()
 
     redirect("/news")
+    pass
 
 
 @route("/update")
