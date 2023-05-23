@@ -2,58 +2,67 @@ import sqlite3
 
 from bottle import redirect, request, route, run, template
 from db import News, session
+from bayes import NaiveBayesClassifier as bayes
 from scraputils import get_news
 
 
 @route("/news")
-def news_list() -> str:
+def news_list():
     sess = session()
     rows = sess.query(News).filter(News.label == None).all()
     return template("news_template", rows=rows)
 
 
 @route("/add_label/")
-def add_label() -> None:
+def add_label():
     sess = session()
-    id = request.query.get("id")
-    label = request.query.get("label")
+    id = request.query["id"]
+    label = request.query["label"]
 
     item = sess.query(News).get(id)
-    if item is not None:  # Check if item is not None
-        item.label = label
-        sess.commit()
+    item.label = label
+    sess.commit()
 
     redirect("/news")
-    pass
 
 
 @route("/update")
-def update_news() -> None:
+def update_news():
     sess = session()
     news = get_news("https://news.ycombinator.com/newest")
 
     for element in news:
-        title = element.get("title")
-        if title is not None:
-            if not list(sess.query(News).filter(News.title == title)):
-                title = element.get("title", "-")
-                author = element.get("author", "-")
-                comments = element.get("comments", 0)
-                points = element.get("points", 0)
-                url = element.get("url", "")
-                new_el = News(title=title, author=author, url=url, comments=comments, points=points)
-                sess.add(new_el)
+        title = element["title"]
+        if not list(sess.query(News).filter(News.title == title)):
+            title = element["title"] if "title" in element else "-"
+            author = element["author"] if "author" in element else "-"
+            comments = element["comments"] if "comments" in element else 0
+            points = element["points"] if "points" in element else 0
+            url = element["url"] if "url" in element else ""
+            new_el = News(title=title, author=author, url=url, comments=comments, points=points)
+            sess.add(new_el)
 
     sess.commit()
 
 
 @route("/classify")
-def classify_news() -> None:
-    pass
+def classify_news():
+    sess = session()
+    train = sess.query(News).filter(News.label != None).all()
+    x = [i.title for i in train]
+    y = [i.label for i in train]
+    bayes.fit(x, y)
+    news = sess.query(News).filter(News.label == None).all()
+    X = [i.title for i in news]
+    y = bayes.predict(X)
+    for i in range(len(news)):
+        news[i].label = y[i]
+    sess.commit()
+    return sorted(news, key=lambda x: x.label)
 
 
 @route("/recommendations")
-def recommendations() -> str:
+def recommendations():
     sess = session()
     news = sess.query(News).filter(News.label == "good").all()
 
@@ -61,7 +70,7 @@ def recommendations() -> str:
 
 
 @route("/")
-def index() -> None:
+def index():
     redirect("/news")
 
 
