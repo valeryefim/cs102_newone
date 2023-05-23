@@ -1,8 +1,8 @@
 import sqlite3
 
+from bayes import NaiveBayesClassifier as bayes
 from bottle import redirect, request, route, run, template
 from db import News, session
-from bayes import NaiveBayesClassifier as bayes
 from scraputils import get_news
 
 
