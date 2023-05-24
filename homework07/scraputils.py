@@ -1,4 +1,4 @@
-import requests
+# import requests
 from bs4 import BeautifulSoup
 from db import News
 from sqlalchemy import create_engine
