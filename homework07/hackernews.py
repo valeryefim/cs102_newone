@@ -12,6 +12,13 @@ def news_list():
     return template("news_template", rows=rows)
 
 
+@route("/news2")
+def news_list():
+    sess = session()
+    rows = sess.query(News).filter(News.label == None).limit(1020).all()
+    return template("news_template", rows=rows)
+
+
 @route("/add_label/")
 def add_label():
     sess = session()
@@ -51,6 +58,34 @@ def update_news():
         rows = sess.query(News).offset(offset).limit(limit).all()
 
     redirect("/news")
+
+
+@route("/update")
+def update_news():
+    sess = session()
+    offset = int(request.query.get("offset", 0))
+    limit = 50
+
+    news_count = sess.query(News).count()
+    rows = sess.query(News).offset(offset).limit(limit).all()
+
+    if offset >= news_count:
+        news = get_news("https://news.ycombinator.com/newest")
+
+        for element in news:
+            title = element.get("title", "-")
+            if not sess.query(News).filter(News.title == title).first():
+                author = element.get("author", "-")
+                comments = element.get("comments", 0)
+                points = element.get("points", 0)
+                url = element.get("url", "")
+                new_el = News(title=title, author=author, url=url, comments=comments, points=points)
+                sess.add(new_el)
+
+        sess.commit()
+        rows = sess.query(News).offset(offset).limit(limit).all()
+
+    redirect("/news2")
 
 
 @route("/classify")

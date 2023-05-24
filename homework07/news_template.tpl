@@ -7,7 +7,7 @@
     </head>
     <body>
         <div class="ui container" style="padding-top: 10px;">
-            <a href="/recommendations" class="ui primary button">Мои рекомендации</a> <!-- Добавленная кнопка "Мои рекомендации" -->
+            <a href="/recommendations" class="ui primary button">Мои рекомендации</a> <!-- кнопка "Мои рекомендации" -->
             <table class="ui celled table">
                 <thead>
                     <th>Title</th>
