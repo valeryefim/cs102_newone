@@ -35,13 +35,13 @@ def add_label():
 @route("/update")
 def update_news():
     sess = session()
-    offset = int(request.query.get("offset", 0))
+    offset = int(request.query.get("offset", 0)) # type: ignore
     limit = 50
 
-    news_count = sess.query(News).count()
+    news_count = sess.query(News).count() # type: ignore
     rows = sess.query(News).offset(offset).limit(limit).all()
 
-    if offset >= news_count:
+    if offset >= news_count: # type: ignore
         news = get_news("https://news.ycombinator.com/newest")
 
         for element in news:
@@ -94,10 +94,10 @@ def classify_news():
     train = sess.query(News).filter(News.label != None).all()
     x = [i.title for i in train]
     y = [i.label for i in train]
-    bayes.fit(x, y)
+    bayes.fit(x, y)  # type: ignore
     news = sess.query(News).filter(News.label == None).all()
     X = [i.title for i in news]
-    y = bayes.predict(X)
+    y = bayes.predict(X)  # type: ignore
     for i in range(len(news)):
         news[i].label = y[i]
     sess.commit()
