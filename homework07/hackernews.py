@@ -13,7 +13,7 @@ def news_list():
 
 
 @route("/news2")
-def news_list():
+def news_list1():
     sess = session()
     rows = sess.query(News).filter(News.label == None).limit(1020).all()
     return template("news_template", rows=rows)
@@ -61,7 +61,7 @@ def update_news():
 
 
 @route("/update")
-def update_news():
+def update_news1():
     sess = session()
     offset = int(request.query.get("offset", 0))
     limit = 50
