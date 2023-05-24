@@ -35,13 +35,13 @@ def add_label():
 @route("/update")
 def update_news():
     sess = session()
-    offset = int(request.query.get("offset", 0)) # type: ignore
+    offset = int(request.query.get("offset", 0))  # type: ignore
     limit = 50
 
-    news_count = sess.query(News).count() # type: ignore
+    news_count = sess.query(News).count()  # type: ignore
     rows = sess.query(News).offset(offset).limit(limit).all()
 
-    if offset >= news_count: # type: ignore
+    if offset >= news_count:  # type: ignore
         news = get_news("https://news.ycombinator.com/newest")
 
         for element in news:
