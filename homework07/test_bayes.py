@@ -4,7 +4,7 @@ import unittest
 
 from bayes import NaiveBayesClassifier
 
-PATH_FOR_GIT = "/home/runner/work/cs102/cs102/homework06/data/"
+PATH_FOR_GIT = "/home/runner/work/cs102_newone/cs102_newone/homework07/data/SMSSpamCollection"
 
 
 class TestBayes(unittest.TestCase):
