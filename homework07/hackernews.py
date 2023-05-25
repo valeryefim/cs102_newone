@@ -98,7 +98,7 @@ def classify_news():
     train = sess.query(News).filter(News.label != None).all()
     x = [i.title for i in train]
     y = [i.label for i in train]
-    model = bayes.NaiveBayesClassifier()
+    model = bayes.NaiveBayesClassifier(0.05)
     model.fit(x, y)
     news = sess.query(News).filter(News.label == None).all()
     X = [i.title for i in news]
