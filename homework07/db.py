@@ -1,6 +1,6 @@
-import sqlalchemy
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.orm import sessionmaker
+import sqlalchemy  # type: ignore
+from sqlalchemy import Column, Integer, String, create_engine  # type: ignore
+from sqlalchemy.orm import sessionmaker  # type: ignore
 
 Base = sqlalchemy.orm.declarative_base()
 engine = create_engine("sqlite:///news.db")

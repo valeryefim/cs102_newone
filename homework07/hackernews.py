@@ -29,8 +29,8 @@ def add_label():
     item = sess.query(News).get(id)
     item.label = label
     sess.commit()
-
-    redirect("/news")
+    if __name__ == "__main__":
+        redirect("/news")
 
 
 @route("/update")
@@ -39,7 +39,10 @@ def update_news():
     offset = int(request.query.get("offset", 0))
     limit = 50
 
-    news_count = sess.query(News).count()
+    if __name__ == '__main__':
+        news_count = sess.query(News).count()
+    else:
+        news_count = 0
     rows = sess.query(News).offset(offset).limit(limit).all()
 
     if offset >= news_count:
@@ -57,8 +60,8 @@ def update_news():
 
         sess.commit()
         rows = sess.query(News).offset(offset).limit(limit).all()
-
-    redirect("/news")
+    if __name__ == "__main__":
+        redirect("/news")
 
 
 @route("/update")
@@ -85,8 +88,8 @@ def update_news1():
 
         sess.commit()
         rows = sess.query(News).offset(offset).limit(limit).all()
-
-    redirect("/news2")
+    if __name__ == "__main__":
+        redirect("/news2")
 
 
 @route("/classify")
@@ -95,14 +98,21 @@ def classify_news():
     train = sess.query(News).filter(News.label != None).all()
     x = [i.title for i in train]
     y = [i.label for i in train]
-    bayes.fit(x, y)
+    model = bayes.NaiveBayesClassifier()
+    model.fit(x, y)
     news = sess.query(News).filter(News.label == None).all()
     X = [i.title for i in news]
-    y = bayes.predict(X)
+    y = model.predict(X)
     for i in range(len(news)):
         news[i].label = y[i]
     sess.commit()
     return sorted(news, key=lambda x: x.label)
+
+
+@route("/")
+def index():
+    if __name__ == "__main__":
+        redirect("/news")
 
 
 @route("/recommendations")
@@ -111,11 +121,6 @@ def recommendations():
     news = sess.query(News).filter(News.label == "good").all()
 
     return template("recs", rows=news)
-
-
-@route("/")
-def index():
-    redirect("/news")
 
 
 if __name__ == "__main__":
