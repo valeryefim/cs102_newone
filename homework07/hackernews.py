@@ -47,18 +47,20 @@ def update_news():
     #
     # if offset >= news_count:
     news = get_news("https://news.ycombinator.com/newest")
-
     for element in news:
-        title = element.get("title", "-")
-        if not sess.query(News).filter(News.title == title).first():
-            author = element.get("author", "-")
-            comments = element.get("comments", 0)
-            points = element.get("points", 0)
-            url = element.get("url", "")
+        if (
+            not sess.query(News)
+            .filter(News.author == element["author"], News.title == element["title"])
+            .first()
+        ):
+            title = element.get("title")
+            author = element.get("author")
+            comments = element.get("comments")
+            points = element.get("points")
+            url = element.get("url")
             new_el = News(title=title, author=author, url=url, comments=comments, points=points)
             sess.add(new_el)
-
-    sess.commit()
+            sess.commit()
     # rows = sess.query(News).offset(offset).limit(limit).all()
     if __name__ == "__main__":
         redirect("/news")
