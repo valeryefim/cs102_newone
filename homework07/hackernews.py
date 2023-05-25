@@ -4,7 +4,6 @@ import bayes
 from bottle import redirect, request, route, run, template
 from db import News, session
 from scraputils import get_news
-import random
 
 
 @route("/news")
