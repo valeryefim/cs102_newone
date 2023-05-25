@@ -48,11 +48,7 @@ def update_news():
     # if offset >= news_count:
     news = get_news("https://news.ycombinator.com/newest")
     for element in news:
-        if (
-            not sess.query(News)
-            .filter(News.author == element["author"], News.title == element["title"])
-            .first()
-        ):
+        if not sess.query(News).filter(News.author == element["author"], News.title == element["title"]).first():
             title = element.get("title")
             author = element.get("author")
             comments = element.get("comments")
