@@ -3,6 +3,7 @@ import sqlite3
 from bottle import redirect, request, route, run, template
 from db import News, session
 from scraputils import get_news
+import bayes
 
 
 @route("/news")
@@ -35,13 +36,13 @@ def add_label():
 @route("/update")
 def update_news():
     sess = session()
-    offset = int(request.query.get("offset", 0))  # type: ignore
+    offset = int(request.query.get("offset", 0))
     limit = 50
 
-    news_count = sess.query(News).count()  # type: ignore
+    news_count = sess.query(News).count()
     rows = sess.query(News).offset(offset).limit(limit).all()
 
-    if offset >= news_count:  # type: ignore
+    if offset >= news_count:
         news = get_news("https://news.ycombinator.com/newest")
 
         for element in news:
@@ -94,10 +95,10 @@ def classify_news():
     train = sess.query(News).filter(News.label != None).all()
     x = [i.title for i in train]
     y = [i.label for i in train]
-    bayes.fit(x, y)  # type: ignore
+    bayes.fit(x, y)
     news = sess.query(News).filter(News.label == None).all()
     X = [i.title for i in news]
-    y = bayes.predict(X)  # type: ignore
+    y = bayes.predict(X)
     for i in range(len(news)):
         news[i].label = y[i]
     sess.commit()
