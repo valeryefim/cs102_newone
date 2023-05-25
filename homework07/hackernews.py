@@ -4,6 +4,7 @@ import bayes
 from bottle import redirect, request, route, run, template
 from db import News, session
 from scraputils import get_news
+import random
 
 
 @route("/news")
@@ -103,8 +104,8 @@ def classify_news():
     y = model.predict(X)
     for i in range(len(news)):
         news[i].label = y[i]
-    sess.commit()
-    return sorted(news, key=lambda x: x.label)
+    a = sorted(news, key=lambda x: x.label)
+    return a
 
 
 @route("/")
@@ -115,9 +116,7 @@ def index():
 
 @route("/recommendations")
 def recommendations():
-    sess = session()
-    news = sess.query(News).filter(News.label == "good").all()
-
+    news = classify_news()
     return template("recs", rows=news)
 
 
