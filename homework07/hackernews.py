@@ -36,31 +36,30 @@ def add_label():
 @route("/update")
 def update_news():
     sess = session()
-    offset = int(request.query.get("offset", 0))
-    limit = 50
+    # offset = int(request.query.get("offset", 0))
+    # limit = 50
+    #
+    # if __name__ == "__main__":
+    #     news_count = sess.query(News).count()
+    # else:
+    #     news_count = 0
+    # rows = sess.query(News).offset(offset).limit(limit).all()
+    #
+    # if offset >= news_count:
+    news = get_news("https://news.ycombinator.com/newest")
 
+    for element in news:
+        title = element.get("title", "-")
+        if not sess.query(News).filter(News.title == title).first():
+            author = element.get("author", "-")
+            comments = element.get("comments", 0)
+            points = element.get("points", 0)
+            url = element.get("url", "")
+            new_el = News(title=title, author=author, url=url, comments=comments, points=points)
+            sess.add(new_el)
 
-    if __name__ == "__main__":
-        news_count = sess.query(News).count()
-    else:
-        news_count = 0
-    rows = sess.query(News).offset(offset).limit(limit).all()
-
-    if offset >= news_count:
-        news = get_news("https://news.ycombinator.com/newest")
-
-        for element in news:
-            title = element.get("title", "-")
-            if not sess.query(News).filter(News.title == title).first():
-                author = element.get("author", "-")
-                comments = element.get("comments", 0)
-                points = element.get("points", 0)
-                url = element.get("url", "")
-                new_el = News(title=title, author=author, url=url, comments=comments, points=points)
-                sess.add(new_el)
-
-        sess.commit()
-        rows = sess.query(News).offset(offset).limit(limit).all()
+    sess.commit()
+    # rows = sess.query(News).offset(offset).limit(limit).all()
     if __name__ == "__main__":
         redirect("/news")
 
