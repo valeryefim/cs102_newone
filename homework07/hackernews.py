@@ -38,7 +38,8 @@ def update_news():
     sess = session()
     offset = int(request.query.get("offset", 0))
     limit = 50
-    
+
+
     if __name__ == "__main__":
         news_count = sess.query(News).count()
     else:
