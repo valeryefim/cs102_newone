@@ -94,7 +94,13 @@ def get_mutual(
             try:
                 friend_friends = get_friends(friend).items
                 mutual_friends = list(set(source_uid_friends).intersection(friend_friends))
-                mutual.append({"id": int(friend), "common_friends": list(map(int, mutual_friends)), "common_count": len(mutual_friends)})
+                mutual.append(
+                    {
+                        "id": int(friend),
+                        "common_friends": list(map(int, mutual_friends)),
+                        "common_count": len(mutual_friends)
+                    }
+                )
             except:
                 continue
         return mutual
