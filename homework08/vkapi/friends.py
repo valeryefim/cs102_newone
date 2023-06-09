@@ -95,6 +95,7 @@ def get_mutual(
                 mut_friends_for_list.extend(friend_friends)
             except:
                 continue
+        source_uid = [source_uid]
         mutual_friends = list(set(source_uid).intersection(mut_friends_for_list))
 
     return mutual_friends
