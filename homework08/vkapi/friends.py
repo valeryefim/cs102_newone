@@ -1,7 +1,7 @@
 import dataclasses  # type: ignore
 import typing as tp  # type: ignore
 
-import config  # type: ignore
+import vkapi.config  # type: ignore
 import requests  # type: ignore
 from requests import Response  # type: ignore
 
