@@ -6,7 +6,7 @@ import requests  # type: ignore
 
 VK_CONFIG = {
     "domain": "https://api.vk.com/method",
-    "access_token": "vk1.a.k7zMfo85Rw9DI4Yrk9-AnDsorasqwqG2tlUIOnTuSFOZtatwYq4sazEL3Q-w84dol72bbGmQH_7_tPJNgggtkdLg354IrF5GPNdleWCzRGcrJnpA31zjWp5roob28RjVQkKeuYQd-KfdW2eewrRE-HHiPoqgrHb9PLaHlIUk4fYT5kdwfCOL0TC15O3tYUqa",
+    "access_token": "",
     "version": "5.126",
 }
 
@@ -47,7 +47,8 @@ def age_predict(user_id: int) -> tp.Optional[float]:
             pass
 
     median = np.median(ages)
-    print(f"Медианный возраст пользователя: {median}")
+
+    return print(f"Медианный возраст пользователя: {median}")
 
 
 if __name__ == "__main__":

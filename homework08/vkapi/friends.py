@@ -47,7 +47,7 @@ def get_friends(user_id: int, count: int = 5000, offset: int = 0, fields: tp.Opt
 
         return friends_ids
     except:
-        pass
+        return []
 
 
 class MutualFriends(tp.TypedDict):
@@ -57,7 +57,7 @@ class MutualFriends(tp.TypedDict):
 
 
 def get_mutual(
-    source_uid: tp.Optional[int] = None,
+    source_uid: int,
     target_uid: tp.Optional[int] = None,
     target_uids: tp.Optional[tp.List[int]] = None,
     order: str = "",
