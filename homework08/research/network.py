@@ -8,7 +8,7 @@ import pandas as pd  # type: ignore
 from vkapi.friends import get_friends, get_mutual  # type: ignore
 
 
-def ego_network(user_id: int, friends: tp.Optional[tp.List[int]] = None) -> tp.List[tp.Tuple[int, int]]:
+def ego_network(user_id: int = 1, friends: tp.Optional[tp.List[int]] = None) -> tp.List[tp.Tuple[int, int]]:
     """
     Построить эгоцентричный граф друзей.
 

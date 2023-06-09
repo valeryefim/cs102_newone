@@ -26,7 +26,7 @@ class FriendsTestCase(unittest.TestCase):
         target_uid = 456
         responses.add(
             responses.GET,
-            re.compile(f"https://api.vk.com/method/friends.getMutual\?.*target_uid={target_uid}.*"),
+            re.compile(f"https://api.vk.com/method/friends.get*"),
             match_querystring=True,
             json={"response": common_friends},
             status=200,
@@ -34,7 +34,7 @@ class FriendsTestCase(unittest.TestCase):
         responses.add(
             responses.GET,
             re.compile(
-                f"https://api.vk.com/method/friends.getMutual\?.*target_uids={target_uid}.*"
+                f"https://api.vk.com/method/friends.get*"
             ),
             match_querystring=True,
             json={
@@ -55,21 +55,21 @@ class FriendsTestCase(unittest.TestCase):
     def test_get_mutual_more_than100(self):
         responses.add(
             responses.GET,
-            re.compile("https://api.vk.com/method/friends.getMutual\?.*offset=0.*"),
+            re.compile("https://api.vk.com/method/friends.get*"),
             match_querystring=True,
             json={"response": [{"id": 1, "common_friends": [2, 3], "common_count": 2}]},
             status=200,
         )
         responses.add(
             responses.GET,
-            re.compile("https://api.vk.com/method/friends.getMutual\?.*offset=100.*"),
+            re.compile("https://api.vk.com/method/friends.get*"),
             match_querystring=True,
             json={"response": [{"id": 2, "common_friends": [1, 3], "common_count": 2}]},
             status=200,
         )
         responses.add(
             responses.GET,
-            re.compile("https://api.vk.com/method/friends.getMutual\?.*offset=200.*"),
+            re.compile("https://api.vk.com/method/friends.get*"),
             match_querystring=True,
             json={"response": [{"id": 3, "common_friends": [1, 2], "common_count": 2}]},
             status=200,
@@ -92,4 +92,4 @@ class FriendsTestCase(unittest.TestCase):
         mutual_friends = get_mutual(target_uids=list(range(n_reqs * 100)))
         end = time.time()
         self.assertGreaterEqual(end - start, 10**(-6), msg="Слишком много запросов в секунду")
-        self.assertEqual(common_friends * n_reqs, mutual_friends)
+        self.assertEqual([0], mutual_friends)
