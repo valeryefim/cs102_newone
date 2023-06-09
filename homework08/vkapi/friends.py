@@ -88,16 +88,14 @@ def get_mutual(
         mutual_friends = list(set(source_uid_friends).intersection(target_uid_friends))
 
     elif target_uids is not None:
-        source_uid = get_friends(source_uid)
+        source_uid_friends = get_friends(source_uid)
         for friend in target_uids:
             try:
                 friend_friends = get_friends(friend)
                 mut_friends_for_list.extend(friend_friends)
             except:
                 continue
-        source_uid_set = set()
-        source_uid_set.add(source_uid)
-        mutual_friends = list(source_uid_set.intersection(mut_friends_for_list))
+        mutual_friends = list(set(source_uid_friends).intersection(mut_friends_for_list))
 
     return mutual_friends
 
