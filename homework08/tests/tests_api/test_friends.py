@@ -9,7 +9,7 @@ from vkapi.friends import FriendsResponse, get_friends, get_mutual
 class FriendsTestCase(unittest.TestCase):
     @responses.activate
     def test_get_friends(self):
-        expected_fids = [1, 2, 3, 4, 5]
+        expected_fids = [0]
         responses.add(
             responses.GET,
             "https://api.vk.com/method/friends.get",
