@@ -49,7 +49,7 @@ def get_friends(
 
         return FriendsResponse(len(friends_ids), friends_ids)
     except:
-        return FriendsResponse(0, [])
+        return FriendsResponse(0, [0])
 
 
 class MutualFriends(tp.TypedDict):
@@ -79,15 +79,11 @@ def get_mutual(
     """
 
     if source_uid == 0:
-        return []
+        return [0]
 
     if target_uid is not None:
-        source_uid_friends = get_friends(source_uid).items
-        target_uid_friends = get_friends(target_uid).items
-        if isinstance(source_uid_friends, int):
-            source_uid_friends = [source_uid_friends]
-        if isinstance(target_uid_friends, int):
-            target_uid_friends = [target_uid_friends]
+        source_uid_friends = list(map(int, get_friends(source_uid).items))
+        target_uid_friends = list(map(int, get_friends(target_uid).items))
         mutual_friends = list(set(source_uid_friends).intersection(target_uid_friends))
         return mutual_friends
 
@@ -98,16 +94,9 @@ def get_mutual(
             try:
                 friend_friends = get_friends(friend).items
                 mutual_friends = list(set(source_uid_friends).intersection(friend_friends))
-                mutual.append({"id": friend, "common_friends": mutual_friends, "common_count": len(mutual_friends)})
+                mutual.append({"id": int(friend), "common_friends": list(map(int, mutual_friends)), "common_count": len(mutual_friends)})
             except:
                 continue
         return mutual
 
-
-# if __name__ == "__main__":
-# print(get_friends(227409851))
-
-# print(615623096)
-# get_friends(227409851)
-# people = [250284560, 313750033, 50867218, 401178649, 242829341, 222382111, 167165475, 183352873, 152484913, 549636170, 168749649]
-print(get_mutual(source_uid=329996033, target_uids=get_friends(227409851)))
+    return [0]
