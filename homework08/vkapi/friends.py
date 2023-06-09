@@ -98,7 +98,7 @@ def get_mutual(
                     {
                         "id": int(friend),
                         "common_friends": list(map(int, mutual_friends)),
-                        "common_count": len(mutual_friends)
+                        "common_count": len(mutual_friends),
                     }
                 )
             except:
