@@ -13,9 +13,9 @@ v = vkapi.config.VK_CONFIG["version"]
 user_id = 329996033
 fields = "bdate"
 
-query = f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}"
-response = requests.get(query)
-friends_count = response.json()["response"]["count"]
+# query = f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}"
+# response = requests.get(query)
+# friends_count = response.json()["response"]["count"]
 
 
 @dataclasses.dataclass(frozen=True)

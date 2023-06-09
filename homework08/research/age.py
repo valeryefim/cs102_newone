@@ -16,10 +16,6 @@ v = VK_CONFIG["version"]
 user_id = 189183825
 fields = "bdate"
 
-query = f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}"
-response = requests.get(query)
-friends_count = response.json()["response"]["count"]
-
 
 def age_predict(user_id: int) -> tp.Optional[float]:
     """
@@ -30,6 +26,9 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     :param user_id: Идентификатор пользователя.
     :return: Медианный возраст пользователя.
     """
+    query = f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}"
+    response = requests.get(query)
+    friends_count = response.json()["response"]["count"]
 
     year = dt.datetime.today().year
     ages = []
