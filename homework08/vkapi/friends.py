@@ -1,8 +1,8 @@
 import dataclasses  # type: ignore
 import typing as tp  # type: ignore
 
-import vkapi.config  # type: ignore
 import requests  # type: ignore
+import vkapi.config  # type: ignore
 from requests import Response  # type: ignore
 
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
@@ -106,4 +106,5 @@ def get_mutual(
 # print(615623096)
 # get_friends(227409851)
 # people = [250284560, 313750033, 50867218, 401178649, 242829341, 222382111, 167165475, 183352873, 152484913, 549636170, 168749649]
-# print(get_mutual(source_uid=329996033, target_uids=get_friends(227409851), offset=1))
+print(get_mutual(source_uid=329996033, target_uids=get_friends(227409851)))
+
