@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="ui container" style="padding-top: 10px;">
-        <a href="javascript:history.go(-1)" class="ui primary button">Назад</a> <!-- Добавленная кнопка "Назад" -->
+        <a href="javascript:history.go(-1)" class="ui primary button">Назад</a> <!-- кнопка "Назад" -->
         <h1>Возможно, вам понравятся эти статьи</h1>
         <table class="ui celled table">
             <thead>
