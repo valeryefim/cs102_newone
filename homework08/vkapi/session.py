@@ -6,7 +6,7 @@ from requests.exceptions import (  # type: ignore
     ConnectionError,
     HTTPError,
     ReadTimeout,
-    RetryError
+    RetryError,
 )
 
 
