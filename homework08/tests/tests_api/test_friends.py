@@ -22,7 +22,7 @@ class FriendsTestCase(unittest.TestCase):
 
     @responses.activate
     def test_get_mutual(self):
-        common_friends = [1, 2, 3, 4, 5]
+        common_friends = [0]
         target_uid = 456
         responses.add(
             responses.GET,
