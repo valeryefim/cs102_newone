@@ -68,7 +68,7 @@ def get_mutual(
     count: tp.Optional[int] = None,
     offset: int = 0,
     progress=None,
-) -> tp.Union[tp.List[int], tp.List[MutualFriends]]:
+) -> tp.List[int]:
     """
     Получить список идентификаторов общих друзей между парой пользователей.
     :param source_uid: Идентификатор пользователя, чьи друзья пересекаются с друзьями пользователя с идентификатором target_uid.
