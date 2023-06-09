@@ -17,7 +17,7 @@ user_id = 123
 fields = "bdate"
 
 
-def age_predict(user_id: int) -> tp.Optional[float]:
+def age_predict(user_id: int) -> float:
     """
     Наивный прогноз возраста пользователя по возрасту его друзей.
 
@@ -48,7 +48,7 @@ def age_predict(user_id: int) -> tp.Optional[float]:
         else:
             pass
 
-    median = np.median(ages)
+    median = float(np.median(ages))
 
     return median
 

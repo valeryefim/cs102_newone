@@ -51,6 +51,8 @@ def get_friends(
     except:
         pass
 
+    return [0]
+
 
 class MutualFriends(tp.TypedDict):
     id: int

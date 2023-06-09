@@ -18,7 +18,7 @@ def ego_network(user_id: int, friends: tp.Optional[tp.List[int]] = None) -> tp.L
 
     # Если список друзей не задан, получаем всех друзей пользователя.
     if friends is None:
-        friends = get_friends(user_id).items
+        friends = get_friends(user_id)
 
     # Создаем список для хранения ребер графа.
     edges = []
