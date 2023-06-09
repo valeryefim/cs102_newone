@@ -2,7 +2,12 @@ import time  # type: ignore
 import typing as tp  # type: ignore
 
 import requests  # type: ignore
-from requests.exceptions import ConnectionError, HTTPError, ReadTimeout, RetryError  # type: ignore
+from requests.exceptions import (
+    ConnectionError,
+    HTTPError,
+    ReadTimeout,
+    RetryError
+)  # type: ignore
 
 
 class Session(requests.Session):
