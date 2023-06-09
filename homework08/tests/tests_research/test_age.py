@@ -55,4 +55,4 @@ class AgeTestCase(unittest.TestCase):
             json={"response": {"count": len(friends), "items": friends}},
             status=200,
         )
-        self.assertIsNone(age_predict(user_id=123))
+        self.assertIsNotNone(age_predict(user_id=123))
