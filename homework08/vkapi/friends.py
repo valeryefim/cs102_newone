@@ -7,9 +7,9 @@ from requests import Response  # type: ignore
 
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
 
-domain = config.VK_CONFIG["domain"]
-access_token = config.VK_CONFIG["access_token"]
-v = config.VK_CONFIG["version"]
+domain = vkapi.config.VK_CONFIG["domain"]
+access_token = vkapi.config.VK_CONFIG["access_token"]
+v = vkapi.config.VK_CONFIG["version"]
 user_id = 329996033
 fields = "bdate"
 
