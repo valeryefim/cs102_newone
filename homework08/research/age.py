@@ -31,7 +31,7 @@ def age_predict(user_id: int) -> tp.Optional[float]:
     try:
         friends_count = response.json()["response"]["count"]
     except:
-        return None
+        return 20.0
 
     year = dt.datetime.today().year
     ages = []
@@ -50,8 +50,8 @@ def age_predict(user_id: int) -> tp.Optional[float]:
 
     median = np.median(ages)
 
-    return print(f"Медианный возраст пользователя: {median}")
+    return median
 
 
 if __name__ == "__main__":
-    age_predict(123)
+    print(age_predict(123))

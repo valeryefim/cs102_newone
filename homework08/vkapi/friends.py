@@ -26,7 +26,7 @@ class FriendsResponse:
 
 def get_friends(
     user_id: int, count: int = 5000, offset: int = 0, fields: tp.Optional[tp.List[str]] = None
-) -> FriendsResponse:
+) -> tp.List[int]:
     """
     Получить список идентификаторов друзей пользователя или расширенную информацию
     о друзьях пользователя (при использовании параметра fields).
@@ -47,9 +47,9 @@ def get_friends(
         for i in range(friends_count):
             friends_ids.append(response.json()["response"]["items"][i]["id"])
 
-        return FriendsResponse(len(friends_ids), friends_ids)
+        return friends_ids
     except:
-        return FriendsResponse(0, [0])
+        pass
 
 
 class MutualFriends(tp.TypedDict):
@@ -82,25 +82,19 @@ def get_mutual(
         return [0]
 
     if target_uid is not None:
-        source_uid_friends = list(map(int, get_friends(source_uid).items))
-        target_uid_friends = list(map(int, get_friends(target_uid).items))
+        source_uid_friends = get_friends(source_uid)
+        target_uid_friends = get_friends(target_uid)
         mutual_friends = list(set(source_uid_friends).intersection(target_uid_friends))
         return mutual_friends
 
     if target_uids is not None:
         mutual = []
-        source_uid_friends = get_friends(source_uid).items
+        source_uid_friends = get_friends(source_uid)
         for friend in target_uids:
             try:
-                friend_friends = get_friends(friend).items
+                friend_friends = get_friends(friend)
                 mutual_friends = list(set(source_uid_friends).intersection(friend_friends))
-                mutual.append(
-                    {
-                        "id": int(friend),
-                        "common_friends": list(map(int, mutual_friends)),
-                        "common_count": len(mutual_friends),
-                    }
-                )
+                mutual.extend(mutual_friends)
             except:
                 continue
         return mutual
