@@ -1,21 +1,21 @@
-import dataclasses  # type: ignore
-import typing as tp  # type: ignore
+import dataclasses
+import typing as tp
 
-import requests  # type: ignore
-import vkapi.config  # type: ignore
-from requests import Response  # type: ignore
+import config
+import requests
+from requests import Response
 
 QueryParams = tp.Optional[tp.Dict[str, tp.Union[str, int]]]
 
-domain = vkapi.config.VK_CONFIG["domain"]
-access_token = vkapi.config.VK_CONFIG["access_token"]
-v = vkapi.config.VK_CONFIG["version"]
+domain = config.VK_CONFIG["domain"]
+access_token = config.VK_CONFIG["access_token"]
+v = config.VK_CONFIG["version"]
 user_id = 329996033
 fields = "bdate"
 
-# query = f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}"
-# response = requests.get(query)
-# friends_count = response.json()["response"]["count"]
+query = f"{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}"
+response = requests.get(query)
+friends_count = response.json()["response"]["count"]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -24,9 +24,7 @@ class FriendsResponse:
     items: tp.Union[tp.List[int], tp.List[tp.Dict[str, tp.Any]]]
 
 
-def get_friends(
-    user_id: int, count: int = 5000, offset: int = 0, fields: tp.Optional[tp.List[str]] = None
-) -> tp.List[int]:
+def get_friends(user_id: int, count: int = 5000, offset: int = 0, fields: tp.Optional[tp.List[str]] = None) -> Response:
     """
     Получить список идентификаторов друзей пользователя или расширенную информацию
     о друзьях пользователя (при использовании параметра fields).
@@ -49,9 +47,7 @@ def get_friends(
 
         return friends_ids
     except:
-        pass
-
-    return [0]
+        return []
 
 
 class MutualFriends(tp.TypedDict):
@@ -61,14 +57,14 @@ class MutualFriends(tp.TypedDict):
 
 
 def get_mutual(
-    source_uid: int = 0,
+    source_uid: int,
     target_uid: tp.Optional[int] = None,
     target_uids: tp.Optional[tp.List[int]] = None,
     order: str = "",
     count: tp.Optional[int] = None,
     offset: int = 0,
     progress=None,
-) -> tp.List[int]:
+) -> tp.Union[tp.List[int], tp.List[MutualFriends]]:
     """
     Получить список идентификаторов общих друзей между парой пользователей.
     :param source_uid: Идентификатор пользователя, чьи друзья пересекаются с друзьями пользователя с идентификатором target_uid.
@@ -80,25 +76,26 @@ def get_mutual(
     :param progress: Callback для отображения прогресса.
     """
 
-    if source_uid == 0:
-        return [0]
+    mut_friends_for_list = []
 
     if target_uid is not None:
         source_uid_friends = get_friends(source_uid)
         target_uid_friends = get_friends(target_uid)
         mutual_friends = list(set(source_uid_friends).intersection(target_uid_friends))
-        return mutual_friends
 
-    if target_uids is not None:
-        mutual = []
-        source_uid_friends = get_friends(source_uid)
+    elif target_uids is not None:
+        source_uid = get_friends(source_uid)
         for friend in target_uids:
             try:
                 friend_friends = get_friends(friend)
-                mutual_friends = list(set(source_uid_friends).intersection(friend_friends))
-                mutual.extend(mutual_friends)
+                mut_friends_for_list.extend(friend_friends)
             except:
                 continue
-        return mutual
+        mutual_friends = list(set(source_uid).intersection(mut_friends_for_list))
 
-    return [0]
+    return mutual_friends
+
+
+# print(get_friends(329996033))
+
+print(get_mutual(source_uid=329996033, target_uids=get_friends(227409851)))

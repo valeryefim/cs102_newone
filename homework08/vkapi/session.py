@@ -1,11 +1,11 @@
+import time
 import typing as tp
 
-import requests  # type: ignore
-from requests.adapters import HTTPAdapter  # type: ignore
-from requests.packages.urllib3.util.retry import Retry  # type: ignore
+import requests
+from requests.exceptions import ConnectionError, HTTPError, ReadTimeout, RetryError
 
 
-class Session:
+class Session(requests.Session):
     """
     Сессия.
 
@@ -22,30 +22,43 @@ class Session:
         max_retries: int = 3,
         backoff_factor: float = 0.3,
     ) -> None:
+        super().__init__()
         self.base_url = base_url
         self.timeout = timeout
-        self.session = requests.Session()
-        possible_errors = []
-        for i in range(400, 600):
-            possible_errors.append(i)
+        self.max_retries = max_retries
+        self.backoff_factor = backoff_factor
 
-        retry_process = Retry(
-            allowed_methods=["POST", "GET"],
-            total=max_retries,
-            backoff_factor=backoff_factor,
-            status_forcelist=possible_errors,
-        )
-        http_adapter = HTTPAdapter(max_retries=retry_process)
-        self.session.mount("https://", http_adapter)
+    def get(self, url: str, **kwargs: tp.Any) -> requests.Response:
+        full_url = self.base_url + url
+        retries = 0
+        while True:
+            try:
+                response = super().get(full_url, timeout=self.timeout, **kwargs)
+                response.raise_for_status()
+                return response
+            except (ConnectionError, HTTPError, ReadTimeout) as e:
+                if retries >= self.max_retries:
+                    raise RetryError("Превышено максимальное кол-во попыток") from e
+                retries += 1
+                delay = self.backoff_factor * (2 ** (retries - 1))
+                time.sleep(delay)
 
-    def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        if "timeout" in kwargs:
-            self.timeout = kwargs["timeout"]
-        response = self.session.get(self.base_url + "/" + url, timeout=self.timeout, *args, **kwargs)
-        return response
+    def post(self, url: str, data=None, json=None, **kwargs: tp.Any) -> requests.Response:
+        full_url = self.base_url + url
+        retries = 0
+        while True:
+            try:
+                response = super().post(full_url, data=data, json=json, timeout=self.timeout, **kwargs)
+                response.raise_for_status()
+                return response
+            except (ConnectionError, HTTPError, ReadTimeout) as e:
+                if retries >= self.max_retries:
+                    raise RetryError("Превышено максимальное кол-во попыток") from e
+                retries += 1
+                delay = self.backoff_factor * (2 ** (retries - 1))
+                time.sleep(delay)
 
-    def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        if "timeout" in kwargs:
-            self.timeout = kwargs["timeout"]
-        response = self.session.post(self.base_url + "/" + url, timeout=self.timeout, *args, **kwargs)
-        return response
+
+if __name__ == "__main__":
+    session = Session("https://")
+    print(session.get("example.com"))

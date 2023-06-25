@@ -1,14 +1,16 @@
-import typing as tp  # type: ignore
-from collections import defaultdict  # type: ignore
+import typing as tp
+from collections import defaultdict
 
-import community as community_louvain  # type: ignore
-import matplotlib.pyplot as plt  # type: ignore
-import networkx as nx  # type: ignore
-import pandas as pd  # type: ignore
-from vkapi.friends import get_friends, get_mutual  # type: ignore
+import community as community_louvain
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
+from friends import get_friends, get_mutual
 
 
-def ego_network(user_id: int = 1, friends: tp.Optional[tp.List[int]] = None) -> tp.List[tp.Tuple[int, int]]:
+def ego_network(
+    user_id: tp.Optional[int] = None, friends: tp.Optional[tp.List[int]] = None
+) -> tp.List[tp.Tuple[int, int]]:
     """
     Построить эгоцентричный граф друзей.
 
@@ -16,27 +18,26 @@ def ego_network(user_id: int = 1, friends: tp.Optional[tp.List[int]] = None) -> 
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
 
-    # Если список друзей не задан, получаем всех друзей пользователя.
+    # Если список друзей не задан, получаем всех друзей пользователя
     if friends is None:
         friends = get_friends(user_id)
 
-    # Создаем список для хранения ребер графа.
+    # Создаем список для хранения ребер графа
     edges = []
 
-    # Для каждого друга в списке друзей:
     for friend_id in friends:
-        # Добавляем ребро между пользователем и другом.
+        # Добавляем ребро между пользователем и другом
         edges.append((user_id, friend_id))
 
         try:
-            # Получаем список общих друзей между пользователем и текущим другом.
+            # Получаем список общих друзей между пользователем и текущим другом
             mutual_friends = get_mutual(source_uid=user_id, target_uid=friend_id)
         except:
             continue
 
         # Для каждого общего друга:
         for mutual_friend_id in mutual_friends:
-            # Добавляем ребро между другом и общим другом.
+            # Добавляем ребро между другом и общим другом
             edges.append((friend_id, mutual_friend_id))
 
     return edges
@@ -89,5 +90,8 @@ def describe_communities(
     return pd.DataFrame(data=data, columns=["cluster"] + fields)
 
 
-# net = ego_network(user_id=227409851)
-# plot_communities(net)
+if __name__ == "__main__":
+    net = ego_network(user_id=189183825)
+    plot_communities(net)
+
+
