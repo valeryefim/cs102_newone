@@ -11,7 +11,17 @@ def encrypt_caesar(plaintext: str, shift: int = 3) -> str:
     ''
     """
     ciphertext = ""
-    # PUT YOUR CODE HERE
+    original_word = str(plaintext)
+    if len(original_word) != 0:
+        for letter in original_word:
+            if letter.isalpha():
+                if letter.isupper():
+                    encrypted_letter = chr((ord(letter) - ord("A") + shift) % 26 + ord("A"))
+                else:
+                    encrypted_letter = chr((ord(letter) - ord("a") + shift) % 26 + ord("a"))
+                ciphertext += encrypted_letter
+            else:
+                ciphertext += letter
     return ciphertext
 
 
@@ -28,5 +38,19 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     ''
     """
     plaintext = ""
-    # PUT YOUR CODE HERE
+    original_word = str(ciphertext)
+    if len(original_word) != 0:
+        for letter in original_word:
+            if letter.isalpha():
+                if letter.isupper():
+                    decrypted_letter = chr((ord(letter) - ord("A") - shift) % 26 + ord("A"))
+                else:
+                    decrypted_letter = chr((ord(letter) - ord("a") - shift) % 26 + ord("a"))
+                plaintext += decrypted_letter
+            else:
+                plaintext += letter
     return plaintext
+
+
+if __name__ == "__main__":
+    print(decrypt_caesar("sbwkrq"))
